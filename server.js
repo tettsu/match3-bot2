@@ -26,16 +26,25 @@ function handleEvent(event) {
     return Promise.resolve(null);
   }
 
+  let tempId = ''
+  if (event.source.type === 'user') {
+    tempId = event.source.userId;
+  } else if(event.source.type === 'room') {
+    tempId = event.source.roomId;
+  } else if(event.source.type === 'group'){
+    tempId = event.source.groupId;
+  }
+
   let mes = ''
   if(event.message.text === '今日の天気'){
     mes = '待っててね';
-    getTodayForecast(event.source.roomId);
+    getTodayForecast(tempId);
   }else if(event.message.text === '明日の天気'){
     mes = '待っててね';
-    getTommorowForecast(event.source.roomId);
+    getTommorowForecast(tempId);
   }else if(event.message.text === '明後日の天気'){
     mes = '待っててね';
-    getDayAfterTommorowForecast(event.source.roomId);
+    getDayAfterTommorowForecast(tempId);
   }
 
   return client.replyMessage(event.replyToken, {
@@ -44,46 +53,46 @@ function handleEvent(event) {
   });
 }
 
-const getTodayForecast = async (roomId) => {
+const getTodayForecast = async (tempId) => {
     const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
     const item = res.data;
 
     await 
-    client.pushMessage(roomId, {
+    client.pushMessage(tempId, {
       type: 'text',
       text: item.title,
     });
-    client.pushMessage(roomId, {
+    client.pushMessage(tempId, {
       type: 'text',
       text: item.forecasts[0].telop,
     });
 }
 
-const getTommorowForecast = async (roomId) => {
+const getTommorowForecast = async (tempId) => {
   const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
   const item = res.data;
 
   await 
-  client.pushMessage(roomId, {
+  client.pushMessage(tempId, {
     type: 'text',
     text: item.title,
   });
-  client.pushMessage(roomId, {
+  client.pushMessage(tempId, {
     type: 'text',
     text: item.forecasts[1].telop,
   });
 }
 
-const getDayAfterTommorowForecast = async (roomId) => {
+const getDayAfterTommorowForecast = async (tempId) => {
   const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
   const item = res.data;
 
   await 
-  client.pushMessage(roomId, {
+  client.pushMessage(tempId, {
     type: 'text',
     text: item.title,
   });
-  client.pushMessage(roomId, {
+  client.pushMessage(tempId, {
     type: 'text',
     text: item.forecasts[1].telop,
   });
