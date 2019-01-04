@@ -28,11 +28,14 @@ function handleEvent(event) {
 
   let mes = ''
   if(event.message.text === '今日の天気'){
-    mes = '待っててね'; //先に処理
-    getTodayForecast(event.source.userId); //スクレイピング処理が終わったらプッシュメッセージ
+    mes = '待っててね';
+    getTodayForecast(event.source.roomId);
   }else if(event.message.text === '明日の天気'){
-    mes = '待っててね'; //先に処理
-    getTommorowForecast(event.source.userId); //スクレイピング処理が終わったらプッシュメッセージ
+    mes = '待っててね';
+    getTommorowForecast(event.source.roomId);
+  }else if(event.message.text === '明後日の天気'){
+    mes = '待っててね';
+    getDayAfterTommorowForecast(event.source.roomId);
   }
 
   return client.replyMessage(event.replyToken, {
@@ -41,47 +44,48 @@ function handleEvent(event) {
   });
 }
 
-const getTodayForecast = async (userId) => {
+const getTodayForecast = async (roomId) => {
     const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
     const item = res.data;
 
     await 
-
-    client.pushMessage(userId, {
+    client.pushMessage(roomId, {
       type: 'text',
       text: item.title,
     });
-
-    client.pushMessage(userId, {
+    client.pushMessage(roomId, {
       type: 'text',
       text: item.forecasts[0].telop,
     });
-
-    client.pushMessage(userId, {
-      type: 'text',
-      text: item.forecasts[0].dateLabel,
-    });
 }
 
-const getTommorowForecast = async (userId) => {
+const getTommorowForecast = async (roomId) => {
   const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
   const item = res.data;
 
   await 
-
-  client.pushMessage(userId, {
+  client.pushMessage(roomId, {
     type: 'text',
     text: item.title,
   });
-
-  client.pushMessage(userId, {
+  client.pushMessage(roomId, {
     type: 'text',
     text: item.forecasts[1].telop,
   });
+}
 
-  client.pushMessage(userId, {
+const getDayAfterTommorowForecast = async (roomId) => {
+  const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
+  const item = res.data;
+
+  await 
+  client.pushMessage(roomId, {
     type: 'text',
-    text: item.forecasts[1].dateLabel,
+    text: item.title,
+  });
+  client.pushMessage(roomId, {
+    type: 'text',
+    text: item.forecasts[1].telop,
   });
 }
 
