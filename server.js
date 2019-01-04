@@ -35,6 +35,13 @@ function handleEvent(event) {
     tempId = event.source.groupId;
   }
 
+  if(event.message.text.match("フリーザ")){
+    return client.replyMessage(event.replyToken, {
+      type: 'text',
+      text: "フリーザではない。私の名はロビンマスク！"
+    });
+  }
+
   let mes = ''
   if(event.message.text === '今日の天気'){
     mes = '待っててね';
