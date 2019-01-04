@@ -45,6 +45,16 @@ function handleEvent(event) {
   }else if(event.message.text === '明後日の天気'){
     mes = '待っててね';
     getDayAfterTommorowForecast(tempId);
+  }else if(event.message.text === '今日の気温'){
+    mes = '待っててね';
+    getTodayTemperature(tempId);
+  }
+  else if(event.message.text === '明日の気温'){
+    mes = '待っててね';
+    getTommorowTemperature(tempId);
+  }else if(event.message.text === '明後日の気温'){
+    mes = '待っててね';
+    getDayAfterTommorowTemperature(tempId);
   }
 
   return client.replyMessage(event.replyToken, {
@@ -56,7 +66,6 @@ function handleEvent(event) {
 const getTodayForecast = async (tempId) => {
     const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
     const item = res.data;
-
     await 
     client.pushMessage(tempId, {
       type: 'text',
@@ -71,7 +80,6 @@ const getTodayForecast = async (tempId) => {
 const getTommorowForecast = async (tempId) => {
   const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
   const item = res.data;
-
   await 
   client.pushMessage(tempId, {
     type: 'text',
@@ -86,7 +94,6 @@ const getTommorowForecast = async (tempId) => {
 const getDayAfterTommorowForecast = async (tempId) => {
   const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
   const item = res.data;
-
   await 
   client.pushMessage(tempId, {
     type: 'text',
@@ -94,8 +101,95 @@ const getDayAfterTommorowForecast = async (tempId) => {
   });
   client.pushMessage(tempId, {
     type: 'text',
-    text: item.forecasts[1].telop,
+    text: item.forecasts[2].telop,
   });
+}
+
+const getTodayTemperature = async (tempId) => {
+  const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
+  const item = res.data;
+
+  if(item.forecasts[0].temperature.max == null){
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最高気温のデータが無いみたいです",
+    });
+  } else {
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最高" + item.forecasts[0].temperature.max.celsius + "度",
+    });
+  }
+
+  if(item.forecasts[0].temperature.min == null){
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最低気温のデータが無いみたいです",
+    });
+  } else {
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最低" + item.forecasts[0].temperature.min.celsius + "度",
+    });
+  }
+}
+
+const getTommorowTemperature = async (tempId) => {
+  const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
+  const item = res.data;
+
+  if(item.forecasts[1].temperature.max == null){
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最高気温のデータが無いみたいです",
+    });
+  } else {
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最高" + item.forecasts[1].temperature.max.celsius + "度",
+    });
+  }
+
+  if(item.forecasts[1].temperature.min == null){
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最低気温のデータが無いみたいです",
+    });
+  } else {
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最低" + item.forecasts[1].temperature.min.celsius + "度",
+    });
+  }
+}
+
+const getDayAfterTommorowTemperature = async (tempId) => {
+  const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
+  const item = res.data;
+
+  if(item.forecasts[2].temperature.max == null){
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最高気温のデータが無いみたいです",
+    });
+  } else {
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最高" + item.forecasts[2].temperature.max.celsius + "度",
+    });
+  }
+
+  if(item.forecasts[2].temperature.min == null){
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最低気温のデータが無いみたいです",
+    });
+  } else {
+    client.pushMessage(tempId, {
+      type: 'text',
+      text: "最低" + item.forecasts[2].temperature.min.celsius + "度",
+    });
+  }
 }
 
 app.listen(PORT);
