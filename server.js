@@ -6,8 +6,8 @@ const axios = require('axios');
 const PORT = process.env.PORT || 3000;
 
 const config = {
-    channelAccessToken: '',
-    channelSecret: ''
+  channelSecret: '',
+  channelAccessToken: ''
 };
 
 const app = express();
@@ -27,11 +27,12 @@ function handleEvent(event) {
   }
 
   let mes = ''
-  if(event.message.text === '天気'){
-    mes = '待ってて'; //先に処理
-    getNodeVer(event.source.userId); //スクレイピング処理が終わったらプッシュメッセージ
-  }else{
-    mes = event.message.text;
+  if(event.message.text === '今日の天気'){
+    mes = '待っててね'; //先に処理
+    getTodayForecast(event.source.userId); //スクレイピング処理が終わったらプッシュメッセージ
+  }else if(event.message.text === '明日の天気'){
+    mes = '待っててね'; //先に処理
+    getTommorowForecast(event.source.userId); //スクレイピング処理が終わったらプッシュメッセージ
   }
 
   return client.replyMessage(event.replyToken, {
@@ -40,14 +41,48 @@ function handleEvent(event) {
   });
 }
 
-const getNodeVer = async (userId) => {
+const getTodayForecast = async (userId) => {
     const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
     const item = res.data;
 
-    await client.pushMessage(userId, {
-        type: 'text',
-        text: item.description.text,
+    await 
+
+    client.pushMessage(userId, {
+      type: 'text',
+      text: item.title,
     });
+
+    client.pushMessage(userId, {
+      type: 'text',
+      text: item.forecasts[0].telop,
+    });
+
+    client.pushMessage(userId, {
+      type: 'text',
+      text: item.forecasts[0].dateLabel,
+    });
+}
+
+const getTommorowForecast = async (userId) => {
+  const res = await axios.get('http://weather.livedoor.com/forecast/webservice/json/v1?city=130010');
+  const item = res.data;
+
+  await 
+
+  client.pushMessage(userId, {
+    type: 'text',
+    text: item.title,
+  });
+
+  client.pushMessage(userId, {
+    type: 'text',
+    text: item.forecasts[1].telop,
+  });
+
+  client.pushMessage(userId, {
+    type: 'text',
+    text: item.forecasts[1].dateLabel,
+  });
 }
 
 app.listen(PORT);
