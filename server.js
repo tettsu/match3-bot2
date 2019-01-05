@@ -4,7 +4,6 @@ const express = require('express');
 const line = require('@line/bot-sdk');
 const axios = require('axios');
 const PORT = process.env.PORT || 3000;
-
 const config = {
   channelSecret: '',
   channelAccessToken: ''
