@@ -41,6 +41,31 @@ function handleEvent(event) {
     });
   }
 
+  if(event.message.text.match("退出！")){
+    if(event.source.type === 'user'){
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: "1:1のチャットだから、出ていけないよ～"
+      });
+    }
+    if(event.source.type === 'group'){
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: "了解！"
+      })
+        .then(() => client.leaveGroup(event.source.groupId));
+    }
+    if(event.source.type === 'room'){
+      return client.replyMessage(event.replyToken, {
+        type: 'text',
+        text: "了解！"
+      })
+        .then(() => client.leaveRoom(event.source.roomId));
+    }
+
+  }
+  
+
   let mes = ''
   if(event.message.text === '今日の天気'){
     mes = '待っててね';
